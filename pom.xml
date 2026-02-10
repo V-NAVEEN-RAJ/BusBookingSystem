@@ -21,6 +21,12 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- Servlet API (provided by Tomcat) -->
         <dependency>
