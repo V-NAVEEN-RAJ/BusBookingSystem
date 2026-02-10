@@ -1,12 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    String contextPath = request.getContextPath();
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <script>
-        const busUrl = "bus";
-        const userUrl = "user";
+        const contextPath = "<%= contextPath %>";
+        const busUrl = contextPath + "/bus";
+        const userUrl = contextPath + "/user";
 
         // ---------------- BUS FUNCTIONS ----------------
         async function loadBuses() {
@@ -171,7 +175,7 @@
         <div class="space-x-4">
             <button class="px-3 py-1 bg-blue-500 rounded hover:bg-blue-700" onclick="showTab('busTab')">Bus Management</button>
             <button class="px-3 py-1 bg-blue-500 rounded hover:bg-blue-700" onclick="showTab('userTab')">User Management</button>
-            <button class="px-3 py-1 bg-red-500 rounded hover:bg-red-700" onclick="window.location.href='signin.jsp'">Logout</button>
+            <button class="px-3 py-1 bg-red-500 rounded hover:bg-red-700" onclick="window.location.href='<%= contextPath %>/signin.jsp'">Logout</button>
         </div>
     </nav>
 

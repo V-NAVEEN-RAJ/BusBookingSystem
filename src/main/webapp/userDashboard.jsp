@@ -2,8 +2,9 @@
     pageEncoding="UTF-8"%>
 
 <%
-    // Read from URL if coming from login redirect like:
-    // userDashboard.jsp?uid=5&uname=Raj
+    String contextPath = request.getContextPath();
+
+    // Read from URL if coming from login redirect like: userDashboard.jsp?uid=5&uname=Raj
     String uidParam = request.getParameter("uid");
     String unameParam = request.getParameter("uname");
 
@@ -24,9 +25,11 @@
 
     // If still not logged in → go to signin
     if (uid == null) {
-        response.sendRedirect("signin.jsp");
+        response.sendRedirect(contextPath + "/signin.jsp");
         return;
     }
+
+    String safeUserName = (uname != null) ? uname.replace("'", "\\'") : "User";
 %>
 
 <!DOCTYPE html>
@@ -34,7 +37,7 @@
 <head>
     <meta charset="UTF-8">
     <title>User Dashboard</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
+    <link rel="stylesheet" href="<%= contextPath %>/css/style.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f3; margin: 0; }
         header { background: #007BFF; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -70,26 +73,21 @@
 <div id="busesDiv" class="container"></div>
 <div id="historyDiv" class="container"></div>
 
-<%
-    String safeUserName = (uname != null) ? uname.replace("'", "\\'") : "User";
-%>
 <script>
+const contextPath = "<%= contextPath %>";
 const userId = parseInt("<%= (uid != null) ? uid : 0 %>", 10);
 const userName = "<%= safeUserName %>";
-
-    console.log("UserId:", userId);
-    console.log("UserName:", userName);
 
 document.getElementById("userName").innerText = userName;
 
 function logout() {
     alert("Logged out successfully!");
-    window.location.href = "signin.jsp";
+    window.location.href = contextPath + "/signin.jsp";
 }
 
 function showBuses() {
     document.getElementById("historyDiv").innerHTML = "";
-    fetch("bus")
+    fetch(contextPath + "/bus")
         .then(res => res.json())
         .then(buses => {
             if (!buses || buses.length === 0) {
@@ -140,7 +138,6 @@ function showBuses() {
 }
 
 function reserveBus(busId, btn) {
-    console.log(userId, userName);
     const seatsInput = document.getElementById(`seats_${busId}`);
     let seats = parseInt(seatsInput.value);
 
@@ -158,9 +155,8 @@ function reserveBus(busId, btn) {
     }
 
     const bookingData = { userId, busId, seatsBooked: seats };
-    console.log("Booking payload:", bookingData);
 
-    fetch("booking", {
+    fetch(contextPath + "/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingData)
@@ -179,7 +175,7 @@ function reserveBus(busId, btn) {
 
 function viewHistory() {
     document.getElementById("busesDiv").innerHTML = "";
-    fetch(`booking?userId=${userId}`)
+    fetch(`${contextPath}/booking?userId=${userId}`)
         .then(res => res.json())
         .then(bookings => {
             if (!bookings || bookings.length === 0) {
